@@ -63,6 +63,28 @@ void Graph::DFSearch(int vertexNum, bool visited[])
 	}
 }
 
+
+// A recursive function to print DFS starting from v used by isCyclic()
+bool Graph::isCyclicUtil(int vertexNum, bool visited[], bool* recStack)
+{
+	if (visited[vertexNum] == false)
+	{
+		visited[vertexNum] = true;
+		recStack[vertexNum] = true;
+
+		//list<pair<int,int>>::iterator i;
+		for (int i = 0; i < adj[vertexNum].size(); ++i)
+		{
+			if (!visited[i] && isCyclicUtil(i, visited, recStack))
+				return true;
+			else if (recStack[i])
+				return true;
+		}
+	}
+	recStack[vertexNum] = false; // Remove vertex from recursion stack
+	return false;
+}
+
 AdjList Graph::getReverse()
 {
 	AdjList reversedList{myList.size()};
@@ -89,7 +111,7 @@ bool Graph::isStronglyConnected()
 	bool* visited = new bool[size]{0};
 	// Step 2: Do DFS traversal starting from first vertex.
 	DFSearch(0, visited);
-	// If DFS traversal doesn’t visit all vertices,then return false.
+	// If DFS traversal doesnâ€™t visit all vertices,then return false.
 	for (int i = 0; i < size; i++)
 		if (visited[i] == false)
 			return false;
@@ -116,6 +138,23 @@ bool Graph::isStronglyConnected()
 	delete visited;
 
 	return true;
+}
+
+bool Graph::isCyclic()
+{
+	bool* visited = new bool[V];
+	bool* recStack = new bool[V];
+	for (int i = 0; i < V; i++)
+	{
+		visited[i] = false;
+		recStack[i] = false;
+	}
+
+	for (int i = 0; i < V; i++)
+		if (!visited[i] && isCyclicUtil(i, visited, recStack))
+			return true;
+
+	return false;
 }
 
 void Graph::checkStronglyConnected() {
