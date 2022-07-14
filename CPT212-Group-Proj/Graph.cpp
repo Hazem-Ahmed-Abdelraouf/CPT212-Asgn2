@@ -19,10 +19,25 @@ Graph::Graph() {
 	initialize();
 }
 
+Graph::Graph(AdjList list)
+{
+	this->myList = list;
+}
+
+
 //function for debugging
 void Graph::print() {
 	for (int i = 0; i < myList.size(); ++i)
 		loopover(myList[i], i);
+}
+
+void Graph::addEdge(int source, int destination)
+{	// checking if the edge already exists.
+	if (find(myList[source].begin(), myList[source].end(), destination)
+		!= myList[source].end())
+	{
+		myList[source].push_back(node(destination, DISTANCES[source][destination]));
+	}
 }
 
 // function for debugging
@@ -120,4 +135,57 @@ void Graph::checkStronglyConnected() {
 		<< "The new graph looks like this:\n";
 	print();
 
+}
+// A function to recieve a subgraph to apply MST on
+void Graph::printAndSelectEdges()
+{
+	AdjList userList{ 5 };
+	Graph subgraph(userList);
+	int sourceVertex;
+	int neighborVertex;
+	char again = 'y';
+	while (again == 'y' || again == 'Y'){
+
+		//printing all vertices that have children
+		vector<int> parents = getParentVertices();
+		for (int i : parents)
+			cout << i << ". " << CITY_NAMES[i] << endl;
+		cout << "Please enter the number of parent vertex from list above: ";
+		cin >> sourceVertex;
+		/*
+		* validate selection from parents vertex
+		*/
+		//printing all nieghbors from selected vertex
+		cout << "-----------------------------------------------\n";
+		vector<int> neighbors = getNeighbors(sourceVertex);
+		for (int i : neighbors)
+			cout << i << ". " << CITY_NAMES[i] << endl;
+		cout << "Please enter the number of neighbor vertex from list above: ";
+		cin >> neighborVertex;
+		/*
+		 validate the neigbor from selection
+		*/
+		subgraph.addEdge(sourceVertex, neighborVertex);
+		cout << "--------------------------------------------\n"
+			 << "Added the edge, do you want to continue ? (Y / N) : ";
+		cin >> again;
+	}
+	subgraph.findMSTOnce();
+
+}
+
+vector<int> Graph::getParentVertices()
+{
+	vector<int> parents;
+	for (int i = 0; i < (int)myList.size(); ++i)
+		if (!myList[i].empty())
+			parents.push_back(i);
+	return parents;
+}
+vector<int> Graph::getNeighbors(int source)
+{
+	vector<int> neighbors;
+	for (int i = 0; i < (int)myList[source].size(); i++)
+		neighbors.push_back(myList[source][i].num);
+	return neighbors;
 }

@@ -56,16 +56,25 @@ private:
     AdjList getReverse();
 	// A function that returns true if the graph is strongly connected
     bool isStronglyConnected();
+    // get all parent vertices
+    vector<int> getParentVertices();
+    // get nieghbors of a vertex
+    vector<int> getNeighbors(int source);
+
 public:
 	Graph();
+    Graph(AdjList list);
 	void reset();
 	void removeEdge(int start, int end);
     void checkStronglyConnected();
 	void detectCycle();
 	void shortestPath(int start, int end);
+    bool findMSTOnce();
 	void findMST(vector<int>& vertecies);
+    void printAndSelectEdges();
 	//function to print the graph
 	void print();
+    void addEdge(int source, int destination);
 
 };
 
