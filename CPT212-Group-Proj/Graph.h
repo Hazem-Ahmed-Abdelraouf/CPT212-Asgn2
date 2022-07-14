@@ -6,6 +6,7 @@
 #include<vector>
 #include <string>
 #include <iostream>
+#include <utility>
 using namespace std;
 // City names array 
 const string CITY_NAMES[5] = { "Monaco, Monaco",
@@ -44,6 +45,8 @@ typedef vector<vector<node>> AdjList;
 
 class Graph
 {
+
+    list<pair<int, int>>* adj;
 private:
 	AdjList myList{5};
 	void initialize();
@@ -57,6 +60,8 @@ private:
 	// A function that returns true if the graph is strongly connected
     bool isStronglyConnected();
     // get all parent vertices
+    bool isCyclic();
+    bool isCyclicUtil(int vertexNum, bool visited[], bool* recStack);
     vector<int> getParentVertices();
     // get nieghbors of a vertex
     vector<int> getNeighbors(int source);
