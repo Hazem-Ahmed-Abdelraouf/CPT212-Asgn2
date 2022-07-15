@@ -29,12 +29,13 @@ Graph::Graph(AdjList list)
 void Graph::print() {
 	for (int i = 0; i < myList.size(); ++i)
 		loopover(myList[i], i);
+	cout << endl;
 }
 
 void Graph::addEdge(int source, int destination)
 {	// checking if the edge already exists.
 	if (find(myList[source].begin(), myList[source].end(), destination)
-		!= myList[source].end())
+		== myList[source].end())
 	{
 		myList[source].push_back(node(destination, DISTANCES[source][destination]));
 	}
@@ -75,9 +76,7 @@ AdjList Graph::getReverse()
 			reversedList[nieghborVertex.num].push_back(node(vertexNum,nieghborVertex.edgeLen));
 		}
 	}
-	cout << "===================================\n\t\tRevesed List\n========================\n";
-	for (int i = 0; i < reversedList.size(); ++i)
-		loopover(reversedList[i], i);
+	
 	return reversedList;
 }
 
@@ -167,10 +166,25 @@ void Graph::printAndSelectEdges()
 		*/
 		subgraph.addEdge(sourceVertex, neighborVertex);
 		cout << "--------------------------------------------\n"
-			 << "Added the edge, do you want to continue ? (Y / N) : ";
+			 << "Added the edge, do you want to add another ? (Y / N) : ";
 		cin >> again;
 	}
-	subgraph.findMSTOnce();
+	// if it returns false, then the selected edges cannot produce MST  
+	if (subgraph.findMSTOnce() == false) {
+		cout << "The edges don't make an MST, so we are going to produce an MST from the original Graph\n";
+		// now we are going to find MST from the original graph rooted at node '0'
+		//firsly we need to make sure that the graph is strongly connected
+		while (!isStronglyConnected())
+			generateRandomEdge();
+		//Then we call the findMST function
+		findMST(0);
+	}
+	// else now we know that edges form a strongly connected graph and 
+	// can produce atleast one MST without the need to generate random edges
+	else {
+		cout << "The selected edges can produce at least one MST\n";
+		subgraph.findMST(0);
+	}
 
 }
 
@@ -189,3 +203,154 @@ vector<int> Graph::getNeighbors(int source)
 		neighbors.push_back(myList[source][i].num);
 	return neighbors;
 }
+
+bool Graph::findMSTOnce() {
+	//If the graph is not strongly connected return false
+	return isStronglyConnected();
+}
+
+void Graph::findMST(int root) {
+	const int V = myList.size();
+	// Array to store constructed MST
+	int *parent = new int[V];
+	// Key values used to pick minimum weight edge in cut
+	int *key = new int[V];
+
+	// To represent set of vertices included in MST
+	bool *mstSet = new bool[V]{ 0 };
+
+	// Initialize all keys as INFINITE
+	for (int i = 0; i < V; i++)
+		key[i] = INT_MAX;
+
+	// Always include first 1st vertex in MST.
+	// Make key 0 so that root node is picked as first vertex.
+	key[root] = 0;
+	parent[root] = -1; // root node has no parents in MST
+
+	// The MST will have V vertices
+	for (int count = 0; count < V - 1; count++)
+	{
+		// Pick the minimum key vertex from the not included vertices in MST
+		int minVertex = getMinKey(key, mstSet);
+
+		// Add the picked vertex to the MST Set
+		mstSet[minVertex] = true;
+		// Updating the key value and parent index of the adjacent vertices of
+		// the picked vertex. (only nodes that have not been in the MST)
+		for (int i = 0; i < (int)myList[minVertex].size(); i++) {
+			node current = myList[minVertex][i];
+			// If the current neighbor node is not in MST set and its length is less than its key then update them
+			if (mstSet[current.num] == false && current.edgeLen < key[current.num]) {
+				parent[current.num] = minVertex;
+				key[current.num] = current.edgeLen;
+			}
+
+		}
+	}
+	printMST(parent);
+	delete key, delete mstSet, delete parent;
+}
+int Graph:: getMinKey(int key[], bool mstSet[]) {
+	// Initialize min value
+	int min = INT_MAX, min_index{};
+	const int V = (int) myList.size();
+	for (int v = 0; v < V; v++)
+		if (mstSet[v] == false && key[v] < min)
+			min = key[v], min_index = v;
+
+	return min_index;
+}
+void Graph::printMST(int parent[]) {
+	cout << "The MST edges are:\n";
+	for (int i = 0; i < 5; i++)
+		if (parent[i] != -1)
+			cout << parent[i] << " - " << i << endl;
+}
+/*
+// Number of vertices in the graph
+#define V 5
+
+// A utility function to find the vertex with
+// minimum key value, from the set of vertices
+// not yet included in MST
+int minKey(int key[], bool mstSet[], int V)
+{
+	// Initialize min value
+	int min = INT_MAX, min_index;
+
+	for (int v = 0; v < V; v++)
+		if (mstSet[v] == false && key[v] < min)
+			min = key[v], min_index = v;
+
+	return min_index;
+}
+
+// A utility function to print the
+// constructed MST stored in parent[]
+void printMST(int parent[], int graph[V][V])
+{
+	cout<<"Edge \tWeight\n";
+	for (int i = 1; i < V; i++)
+		cout<<parent[i]<<" - "<<i<<" \t"<<graph[i][parent[i]]<<" \n";
+}
+// Function to construct and print MST for
+// a graph represented using adjacency
+// matrix representation
+void primMST(int graph[V][V])
+{
+	const int V = myList.size();
+	// Array to store constructed MST
+	int parent[V];
+
+	// Key values used to pick minimum weight edge in cut
+	int key[V];
+
+	// To represent set of vertices included in MST
+	bool mstSet[V]{0};
+
+	// Initialize all keys as INFINITE
+	for (int i = 0; i < V; i++)
+		key[i] = INT_MAX;
+
+	// Always include first 1st vertex in MST.
+	// Make key 0 so that root node is picked as first vertex.
+	key[root] = 0;
+	parent[root] = -1; // root node has no parents in MST
+
+	// The MST will have V vertices
+	for (int count = 0; count < V - 1; count++)
+	{
+		// Pick the minimum key vertex from the not included vertices in MST
+		int minVertex = minKey(key, mstSet);
+
+		// Add the picked vertex to the MST Set
+		mstSet[minVertex] = true;
+
+		------------------------------------------------------------------------
+		// Updating the key value and parent index of the adjacent vertices of
+		// the picked vertex. (only nodes that have not been in the MST)
+		for (int v = 0; v < V; v++)
+		
+			// graph[u][v] is non zero only for adjacent vertices of m
+			// mstSet[v] is false for vertices not yet included in MST
+			// Update the key only if graph[u][v] is smaller than key[v]
+			if (graph[u][v] && mstSet[v] == false && graph[u][v] < key[v])
+				parent[v] = u, key[v] = graph[u][v];
+		+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			// Updating the key value and parent index of the adjacent vertices of
+			// the picked vertex. (only nodes that have not been in the MST)
+			for (int i = 0; i < (int)myList[minVertex].size()) {
+				node current = myList[minVertex][i];
+				// If the current neighbor node is not in MST set and its length is less than its key then update them
+				if (mstSet[current.num] == false && current.edgelen < key[current.num]) {
+					parent[current.num] = minVertex;
+					key[current.num] = current.edgeLen;
+				}
+
+			}
+	
+	// print the constructed MST
+	printMST(parent, graph);
+}
+*/

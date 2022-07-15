@@ -48,7 +48,7 @@ private:
 	AdjList myList{5};
 	void initialize();
     void generateRandomEdge() { return; };
-	// function for debugging
+	// function to loopover and print each vertex's neighbors
 	void loopover(vector<node>& v, int num);
     // A recursive function to DFS starting from a vertex number
     void DFSearch(int vertexNum, bool visited[]);
@@ -60,7 +60,10 @@ private:
     vector<int> getParentVertices();
     // get nieghbors of a vertex
     vector<int> getNeighbors(int source);
-
+    // To get the minimum key 
+    int getMinKey(int key[], bool mstSet[]);
+    // To print MST
+    void printMST(int parent[]);
 public:
 	Graph();
     Graph(AdjList list);
@@ -70,7 +73,7 @@ public:
 	void detectCycle();
 	void shortestPath(int start, int end);
     bool findMSTOnce();
-	void findMST(vector<int>& vertecies);
+	void findMST(int root);
     void printAndSelectEdges();
 	//function to print the graph
 	void print();
