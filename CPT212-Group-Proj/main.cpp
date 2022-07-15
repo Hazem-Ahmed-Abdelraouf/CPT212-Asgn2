@@ -7,45 +7,55 @@
     4. Boston, United States
 */
 
-#include <iostream>
-#include <vector>
 #include "Graph.h"
 using namespace std;
 
 void menu();
 int main()
 {
-    int menuChoice{};
- 
+    int menuChoice{}, u,v;
+
     Graph g;
     while (menuChoice != 9) {
         menu();
         cout << "Please enter your choice : ";
         cin >> menuChoice;
         switch (menuChoice) {
-        case 1:
+        case 1://print graph
             g.print();
             break;
-        case 5:
+        case 2://check if graph is strongly connected
+             
+            break;
+        case 3://check if there is a cycle
+             
+            break;
+        case 4://compute the shortest path between two vertices
+            
+            break;
+        case 5://Find an MST from certain edges
             g.print();
             g.selectEdgesForMST();
             break;
-        case 7:
-           //to remove an edge
+        case 6://Add an edge
+            
+            break;
+
+        case 7://Remove an edge
             g.selectEdgeToRemove();
             break;
-        case 8:
+        case 8://Reset the graph
             g.reset();
         }
     }
-    
-  
+
+
     return 1;
 }
 
 void menu() {
-    cout << "--------------------------------------------------------------------------"<<
-            "\n\t\tMenu options\n\
+    cout << "--------------------------------------------------------------------------" <<
+        "\n\t\tMenu options\n\
             1. print graph \n\
             2. check if graph is strongly connected \n\
             3. check if there is a cycle\n\
@@ -55,5 +65,5 @@ void menu() {
             7. Remove an edge \n\
             8. Reset the graph\n\
             9. Quit program\n" <<
-           "--------------------------------------------------------------------------"<< endl;
+        "--------------------------------------------------------------------------" << endl;
 }
