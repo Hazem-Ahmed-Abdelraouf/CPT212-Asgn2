@@ -26,16 +26,17 @@ using namespace std;
 */
 int main()
 {
-    AdjList a{5};
-    a[0].push_back(node(1, 5 ));
-    a[1].push_back(node(2, 6 ));
-    a[2].push_back(node(3, 4 ));
-    a[3].push_back(node(4, 2 ));
-    a[4].push_back(node(0 ,3 ));
+    //AdjList a{5};
+    //a[0].push_back(node(1, 5 ));
+    //a[1].push_back(node(2, 6 ));
+    //a[2].push_back(node(3, 4 ));
+    //a[3].push_back(node(4, 2 ));
+    ////a[4].push_back(node(0 ,3 ));
  
-    Graph g(a);
+    Graph g;
     g.print();
-    g.printAndSelectEdges();
+    g.selectEdgesForMST();
+    g.print();
     //while (menuChoice != 9) {
     //    //printMenu();
     //    cout << "Please enter your choice : ";

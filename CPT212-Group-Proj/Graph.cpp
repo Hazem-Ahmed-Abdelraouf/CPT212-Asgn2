@@ -14,6 +14,18 @@ void Graph::initialize()
 
 }
 
+void Graph::generateRandomEdge()
+{
+	srand(time(0));
+	int source{}, destination{};
+	while (source == destination) {
+		source = rand() % ((int)myList.size());
+		destination = rand() % ((int)myList.size());
+		
+	}
+	addEdge(source, destination);
+}
+
 
 Graph::Graph() {
 	initialize();
@@ -27,6 +39,7 @@ Graph::Graph(AdjList list)
 
 //function for debugging
 void Graph::print() {
+	cout << "The graph currently looks like this:\n";
 	for (int i = 0; i < myList.size(); ++i)
 		loopover(myList[i], i);
 	cout << endl;
@@ -95,7 +108,7 @@ bool Graph::isStronglyConnected()
 
 	// Step 3: Create a reversed graph
 	AdjList reversedList = getReverse();
-
+	Graph reversedGraph(reversedList);
 
 	// Step 4: Mark all the vertices as not visited (For second DFS)
 	for (int i = 0; i < size; i++)
@@ -103,8 +116,7 @@ bool Graph::isStronglyConnected()
 
 	// Step 5: Do DFS for reversed graph starting from first vertex. Starting Vertex must be same starting
 	// point of first DFS
-	DFSearch(0, visited);
-
+	reversedGraph.DFSearch(0, visited);
 
 
 	// If all vertices are not visited in second DFS, then return false
@@ -112,7 +124,7 @@ bool Graph::isStronglyConnected()
 		if (visited[i] == false)
 			return false;
 
-	delete visited;
+	delete visited, visited = NULL;
 
 	return true;
 }
@@ -125,18 +137,20 @@ void Graph::checkStronglyConnected() {
 		print();
 		return;
 	}
-	cout << "The Graph is not strongly connected....we will generate edges until it becomes so.\n";
+	cout << "The Graph is not strongly connected....we will generate edges until it becomes so.\n"
+		<< "Please wait...";
 	while (!strongly) {
 		generateRandomEdge();
 		strongly = isStronglyConnected();
 	}
-	cout << "Done generating random edges and the graph is strongly connected.\n"
+	cout << "\nDone generating random edges and the graph is strongly connected.\n"
 		<< "The new graph looks like this:\n";
 	print();
 
 }
+
 // A function to recieve a subgraph to apply MST on
-void Graph::printAndSelectEdges()
+void Graph::selectEdgesForMST()
 {
 	AdjList userList{ 5 };
 	Graph subgraph(userList);
@@ -210,6 +224,9 @@ bool Graph::findMSTOnce() {
 }
 
 void Graph::findMST(int root) {
+	//To make the graph strongly connected so we can have an MST
+	while (!isStronglyConnected())
+		generateRandomEdge();
 	const int V = myList.size();
 	// Array to store constructed MST
 	int *parent = new int[V];
@@ -262,95 +279,13 @@ int Graph:: getMinKey(int key[], bool mstSet[]) {
 	return min_index;
 }
 void Graph::printMST(int parent[]) {
+	int sum = 0;
 	cout << "The MST edges are:\n";
-	for (int i = 0; i < 5; i++)
-		if (parent[i] != -1)
+	for (int i = 0; i < 5; i++) {
+		if (parent[i] != -1){
 			cout << parent[i] << " - " << i << endl;
+			sum += DISTANCES[parent[i]][i];
+		}
+	}
+	cout << "And the sum of the wieghts is: " << sum << endl;
 }
-/*
-// Number of vertices in the graph
-#define V 5
-
-// A utility function to find the vertex with
-// minimum key value, from the set of vertices
-// not yet included in MST
-int minKey(int key[], bool mstSet[], int V)
-{
-	// Initialize min value
-	int min = INT_MAX, min_index;
-
-	for (int v = 0; v < V; v++)
-		if (mstSet[v] == false && key[v] < min)
-			min = key[v], min_index = v;
-
-	return min_index;
-}
-
-// A utility function to print the
-// constructed MST stored in parent[]
-void printMST(int parent[], int graph[V][V])
-{
-	cout<<"Edge \tWeight\n";
-	for (int i = 1; i < V; i++)
-		cout<<parent[i]<<" - "<<i<<" \t"<<graph[i][parent[i]]<<" \n";
-}
-// Function to construct and print MST for
-// a graph represented using adjacency
-// matrix representation
-void primMST(int graph[V][V])
-{
-	const int V = myList.size();
-	// Array to store constructed MST
-	int parent[V];
-
-	// Key values used to pick minimum weight edge in cut
-	int key[V];
-
-	// To represent set of vertices included in MST
-	bool mstSet[V]{0};
-
-	// Initialize all keys as INFINITE
-	for (int i = 0; i < V; i++)
-		key[i] = INT_MAX;
-
-	// Always include first 1st vertex in MST.
-	// Make key 0 so that root node is picked as first vertex.
-	key[root] = 0;
-	parent[root] = -1; // root node has no parents in MST
-
-	// The MST will have V vertices
-	for (int count = 0; count < V - 1; count++)
-	{
-		// Pick the minimum key vertex from the not included vertices in MST
-		int minVertex = minKey(key, mstSet);
-
-		// Add the picked vertex to the MST Set
-		mstSet[minVertex] = true;
-
-		------------------------------------------------------------------------
-		// Updating the key value and parent index of the adjacent vertices of
-		// the picked vertex. (only nodes that have not been in the MST)
-		for (int v = 0; v < V; v++)
-		
-			// graph[u][v] is non zero only for adjacent vertices of m
-			// mstSet[v] is false for vertices not yet included in MST
-			// Update the key only if graph[u][v] is smaller than key[v]
-			if (graph[u][v] && mstSet[v] == false && graph[u][v] < key[v])
-				parent[v] = u, key[v] = graph[u][v];
-		+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-			// Updating the key value and parent index of the adjacent vertices of
-			// the picked vertex. (only nodes that have not been in the MST)
-			for (int i = 0; i < (int)myList[minVertex].size()) {
-				node current = myList[minVertex][i];
-				// If the current neighbor node is not in MST set and its length is less than its key then update them
-				if (mstSet[current.num] == false && current.edgelen < key[current.num]) {
-					parent[current.num] = minVertex;
-					key[current.num] = current.edgeLen;
-				}
-
-			}
-	
-	// print the constructed MST
-	printMST(parent, graph);
-}
-*/
