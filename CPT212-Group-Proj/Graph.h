@@ -58,6 +58,8 @@ private:
     AdjList getReverse();
 	// A function that returns true if the graph is strongly connected
     bool isStronglyConnected();
+    // A function that returns true if the graph has cycle
+    bool isCyclic();
     // get all parent vertices
     vector<int> getParentVertices();
     // get nieghbors of a vertex
@@ -77,7 +79,7 @@ public:
     bool findMSTOnce();
 	void findMST(int root);
     void selectEdgesForMST();
-	//function to print the graph
+	// function to print the graph
 	void print();
     void addEdge(int source, int destination);
 

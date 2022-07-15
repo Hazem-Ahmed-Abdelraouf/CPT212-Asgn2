@@ -129,6 +129,7 @@ bool Graph::isStronglyConnected()
 	return true;
 }
 
+
 void Graph::checkStronglyConnected() {
 	bool strongly = isStronglyConnected();
 	// Check if the graph is strongly connected
