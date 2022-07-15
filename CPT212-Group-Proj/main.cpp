@@ -11,9 +11,12 @@
 using namespace std;
 
 void menu();
+void printCities();
 int main()
 {
-    int menuChoice{}, u,v;
+    int menuChoice{},
+        start,
+        destination;
 
     Graph g;
     while (menuChoice != 9) {
@@ -31,7 +34,12 @@ int main()
              
             break;
         case 4://compute the shortest path between two vertices
-            
+            printCities();
+            cout << "Please choose your first city number:";
+            cin >> start;
+            cout << "Now enter your destination city:";
+            cin >> destination;
+            g.shortestPath(start, destination);
             break;
         case 5://Find an MST from certain edges
             g.print();
@@ -66,4 +74,23 @@ void menu() {
             8. Reset the graph\n\
             9. Quit program\n" <<
         "--------------------------------------------------------------------------" << endl;
+}
+
+/*
+    The cities number encodeing:
+    0. Monaco, Monaco
+    1. Mostar, Bosnia and Herzegovina
+    2. Madrid, Spain
+    3. Yerevan, Armenia
+    4. Boston, United States
+*/
+
+        
+void printCities() {
+    cout << "\n\tThe cities number :\n\
+        0. Monaco, Monaco\n\
+        1. Mostar, Bosniaand Herzegovina\n\
+        2. Madrid, Spain\n\
+        3. Yerevan, Armenia\n\
+        4. Boston, United States\n";
 }
