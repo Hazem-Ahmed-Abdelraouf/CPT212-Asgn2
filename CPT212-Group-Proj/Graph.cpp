@@ -5,7 +5,7 @@ void Graph::initialize()
 	// clearing all the contents of the adjacency list
 	for (int i = 0; i < myList.size(); ++i)
 		myList[i].clear();
-	
+
 	myList[0].push_back(node(4, 6125));
 	myList[0].push_back(node(1, 839));
 	myList[2].push_back(node(4, 5471));
@@ -21,7 +21,7 @@ void Graph::generateRandomEdge()
 	while (source == destination) {
 		source = rand() % ((int)myList.size());
 		destination = rand() % ((int)myList.size());
-		
+
 	}
 	addEdge(source, destination);
 }
@@ -54,9 +54,25 @@ void Graph::addEdge(int source, int destination)
 	}
 }
 
+void Graph::reset() {
+	Graph g;
+	g.initialize();
+}
+
+void Graph::removeEdge(int u, int v)
+{
+	for (int i = 0; i < myList[u].size(); i++) {
+		if (myList[u][i] == v) {
+			myList[u].erase(myList[u].begin() + i);
+			break;
+		}
+	}
+}
+
+
 // function for debugging
 void Graph::loopover(vector<node>& v, int num) {
-	
+
 	if (!v.empty()) {
 		cout << endl << num;
 		for (node n : v)
@@ -79,17 +95,17 @@ void Graph::DFSearch(int vertexNum, bool visited[])
 
 AdjList Graph::getReverse()
 {
-	AdjList reversedList{myList.size()};
+	AdjList reversedList{ myList.size() };
 	for (int vertexNum = 0; vertexNum < (int)myList.size(); vertexNum++)
 	{
 		// Recur for all the vertices adjacent to this vertex
 		for (int i = 0; i < myList[vertexNum].size(); ++i)
 		{
 			node nieghborVertex = myList[vertexNum][i];
-			reversedList[nieghborVertex.num].push_back(node(vertexNum,nieghborVertex.edgeLen));
+			reversedList[nieghborVertex.num].push_back(node(vertexNum, nieghborVertex.edgeLen));
 		}
 	}
-	
+
 	return reversedList;
 }
 
@@ -98,10 +114,10 @@ bool Graph::isStronglyConnected()
 {
 	// Step 1: Mark all the vertices as not visited (For first DFS)
 	int size = (int)myList.size();
-	bool* visited = new bool[size]{0};
+	bool* visited = new bool[size] {0};
 	// Step 2: Do DFS traversal starting from first vertex.
 	DFSearch(0, visited);
-	// If DFS traversal doesn’t visit all vertices,then return false.
+	// If DFS traversal doesnï¿½t visit all vertices,then return false.
 	for (int i = 0; i < size; i++)
 		if (visited[i] == false)
 			return false;
@@ -158,7 +174,7 @@ void Graph::selectEdgesForMST()
 	int sourceVertex;
 	int neighborVertex;
 	char again = 'y';
-	while (again == 'y' || again == 'Y'){
+	while (again == 'y' || again == 'Y') {
 
 		//printing all vertices that have children
 		vector<int> parents = getParentVertices();
@@ -181,7 +197,7 @@ void Graph::selectEdgesForMST()
 		*/
 		subgraph.addEdge(sourceVertex, neighborVertex);
 		cout << "--------------------------------------------\n"
-			 << "Added the edge, do you want to add another ? (Y / N) : ";
+			<< "Added the edge, do you want to add another ? (Y / N) : ";
 		cin >> again;
 	}
 	// if it returns false, then the selected edges cannot produce MST  
@@ -230,12 +246,12 @@ void Graph::findMST(int root) {
 		generateRandomEdge();
 	const int V = myList.size();
 	// Array to store constructed MST
-	int *parent = new int[V];
+	int* parent = new int[V];
 	// Key values used to pick minimum weight edge in cut
-	int *key = new int[V];
+	int* key = new int[V];
 
 	// To represent set of vertices included in MST
-	bool *mstSet = new bool[V]{ 0 };
+	bool* mstSet = new bool[V] { 0 };
 
 	// Initialize all keys as INFINITE
 	for (int i = 0; i < V; i++)
@@ -269,10 +285,10 @@ void Graph::findMST(int root) {
 	printMST(parent);
 	delete key, delete mstSet, delete parent;
 }
-int Graph:: getMinKey(int key[], bool mstSet[]) {
+int Graph::getMinKey(int key[], bool mstSet[]) {
 	// Initialize min value
 	int min = INT_MAX, min_index{};
-	const int V = (int) myList.size();
+	const int V = (int)myList.size();
 	for (int v = 0; v < V; v++)
 		if (mstSet[v] == false && key[v] < min)
 			min = key[v], min_index = v;
@@ -283,7 +299,7 @@ void Graph::printMST(int parent[]) {
 	int sum = 0;
 	cout << "The MST edges are:\n";
 	for (int i = 0; i < 5; i++) {
-		if (parent[i] != -1){
+		if (parent[i] != -1) {
 			cout << parent[i] << " - " << i << endl;
 			sum += DISTANCES[parent[i]][i];
 		}
