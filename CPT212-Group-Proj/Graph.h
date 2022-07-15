@@ -12,9 +12,9 @@ using namespace std;
 // City names array 
 const string CITY_NAMES[5] = { "Monaco, Monaco",
                                "Mostar, Bosnia and Herzegovina",
-							   "Madrid, Spain",
+                               "Madrid, Spain",
                                "Yerevan, Armenia",
-                               "Boston, United States"};
+                               "Boston, United States" };
 
 // Distances: an array to store each vertex distance from the rest
 const int DISTANCES[5][5] = { {0,839,988,3066,6125},
@@ -26,16 +26,16 @@ const int DISTANCES[5][5] = { {0,839,988,3066,6125},
 
 
 struct node {
-	int num{};
-	int edgeLen{};
-	node(int num = 0, int edgeLen = 0) : num(num), edgeLen(edgeLen){} // constructor
-	void operator=(const node& right) {
-		this->num = right.num;
-		this->edgeLen = right.edgeLen;
-	}
-	bool operator==(int val) { 
-		return this->num == val;
-	}
+    int num{};
+    int edgeLen{};
+    node(int num = 0, int edgeLen = 0) : num(num), edgeLen(edgeLen) {} // constructor
+    void operator=(const node& right) {
+        this->num = right.num;
+        this->edgeLen = right.edgeLen;
+    }
+    bool operator==(int val) {
+        return this->num == val;
+    }
 
 
 };
@@ -47,16 +47,16 @@ typedef vector<vector<node>> AdjList;
 class Graph
 {
 private:
-	AdjList myList{5};
-	void initialize();
+    AdjList myList{ 5 };
+    void initialize();
     void generateRandomEdge();
-	// function to loopover and print each vertex's neighbors
-	void loopover(vector<node>& v, int num);
+    // function to loopover and print each vertex's neighbors
+    void loopover(vector<node>& v, int num);
     // A recursive function to DFS starting from a vertex number
     void DFSearch(int vertexNum, bool visited[]);
     // To reverse the graph 
     AdjList getReverse();
-	// A function that returns true if the graph is strongly connected
+    // A function that returns true if the graph is strongly connected
     bool isStronglyConnected();
     // A function that returns true if the graph has cycle
     bool isCyclic();
@@ -68,21 +68,21 @@ private:
     int getMinKey(int key[], bool mstSet[]);
     // To print MST
     void printMST(int parent[]);
-	// To remove an edge
+    // To remove an edge
     void removeEdge(int start, int end);
 public:
-	Graph();
+    Graph();
     Graph(AdjList list);
-	void reset();
+    void reset();
     void checkStronglyConnected();
-	void detectCycle();
-	void shortestPath(int start, int end);
+    void detectCycle();
+    void shortestPath(int start, int end);
     bool findMSTOnce();
-	void findMST(int root);
+    void findMST(int root);
     void selectEdgesForMST();
     void selectEdgeToRemove();
-	// function to print the graph
-	void print();
+    // function to print the graph
+    void print();
     void addEdge(int source, int destination);
 
 };
