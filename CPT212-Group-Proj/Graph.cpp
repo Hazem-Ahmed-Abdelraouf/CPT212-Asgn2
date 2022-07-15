@@ -117,6 +117,27 @@ bool Graph::isStronglyConnected()
 	return true;
 }
 
+// Function 2
+// Function that returns true if graph contains cycle
+bool Graph::isCyclic()
+{  
+	int size = (int)myList.size();
+	bool* visited = new bool[size] {0};
+
+	bool* recStack = new bool[size]{0};
+	for (int i = 0; i < size; i++)
+	{
+		visited[i] = false;
+		recStack[i] = false;
+	}
+
+	for (int i = 0; i < size; i++)
+		if (!visited[i] && DFSearch(i, visited))
+			return true;
+
+	return false;
+}
+
 void Graph::checkStronglyConnected() {
 	bool strongly = isStronglyConnected();
 	// Check if the graph is strongly connected
