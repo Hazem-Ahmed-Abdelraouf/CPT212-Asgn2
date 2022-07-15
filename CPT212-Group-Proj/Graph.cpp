@@ -166,8 +166,66 @@ void Graph::removeEdge(int u, int v)
 			break;
 		}
 	}
-	
+
 }
+
+void Graph::shortestPath(int startnode, int destination) {
+	int max = 5;
+	int n = (int)myList.size(),
+		* distance = new int[max],
+		* pred = new int[max];
+	bool* visited = new bool[max] {0};
+	int count, mindistance, nextnode;
+	int INF = 999999;
+	//making all the distance INF and pred of all nodes startnode
+	for (int i = 0; i < n; i++) {
+		distance[i] = INF;
+		pred[i] = startnode;
+	}
+	// inserting the adjacent nodes' distances in the ditance array
+	for (node nd : myList[startnode]) {
+		distance[nd.num] = nd.edgeLen;
+	}
+	//initial condition for the algorithm
+	distance[startnode] = 0;
+	visited[startnode] = true;
+	count = 1;
+	int i = 0, j = 0;
+	//algorithm to find the shortest path
+	while (count < n - 1) {
+		mindistance = INF;
+		for (i = 0; i < n; i++) {
+			if (distance[i] < mindistance && !visited[i]) {
+				mindistance = distance[i];
+				nextnode = i;
+			}
+		}
+		visited[nextnode] = true;
+		for (node nd : myList[nextnode]) {
+			if (!visited[nd.num]) {
+				if (mindistance + nd.edgeLen < distance[nd.num])
+				{
+					distance[nd.num] = mindistance + nd.edgeLen;
+				}
+			}
+		}
+		count++;
+	}
+	// printing shortest path to all the vertices
+	for (i = 0; i < n; i++)
+		if (i != startnode && i == destination) {
+			cout << "\nDistance of node " << i << "= " << distance[i];
+			cout << "\nPath = " << i;
+			j = i;
+			do {
+				j = pred[j];
+				cout << " <--- " << j;
+			} while (j != startnode);
+		}
+	cout << endl;
+}
+
+
 // A function to recieve a subgraph to apply MST on
 void Graph::selectEdgesForMST()
 {
@@ -184,7 +242,7 @@ void Graph::selectEdgesForMST()
 			cout << i << ". " << CITY_NAMES[i] << endl;
 		cout << "Please enter the number of parent vertex from list above: ";
 		cin >> sourceVertex;
-		
+
 		//printing all nieghbors from selected vertex
 		cout << "-----------------------------------------------\n";
 		vector<int> neighbors = getNeighbors(sourceVertex);
@@ -192,7 +250,7 @@ void Graph::selectEdgesForMST()
 			cout << i << ". " << CITY_NAMES[i] << endl;
 		cout << "Please enter the number of neighbor vertex from list above: ";
 		cin >> neighborVertex;
-		
+
 		subgraph.addEdge(sourceVertex, neighborVertex);
 		cout << "--------------------------------------------\n"
 			<< "Added the edge, do you want to add another ? (Y / N) : ";
@@ -318,8 +376,8 @@ void Graph::printMST(int parent[]) {
 	int sum = 0;
 	cout << "The MST edges are:\n";
 	for (int i = 0; i < 5; i++) {
-		if (parent[i] != -1){
-			cout << CITY_NAMES[parent[i]] << " ---> " << CITY_NAMES[i] << "  "<<"(" << DISTANCES[parent[i]][i] <<")" <<endl;
+		if (parent[i] != -1) {
+			cout << CITY_NAMES[parent[i]] << " ---> " << CITY_NAMES[i] << "  " << "(" << DISTANCES[parent[i]][i] << ")" << endl;
 			sum += DISTANCES[parent[i]][i];
 		}
 	}
