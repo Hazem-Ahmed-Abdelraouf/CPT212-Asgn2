@@ -16,7 +16,7 @@ const string CITY_NAMES[5] = { "Monaco, Monaco",
                                "Yerevan, Armenia",
                                "Boston, United States"};
 
-// Distances array from each vertex to the rest
+// Distances: an array to store each vertex distance from the rest
 const int DISTANCES[5][5] = { {0,839,988,3066,6125},
                               {839,0,1806,2232,6869},
                               {988,1806,0,4036,5471},
@@ -68,17 +68,19 @@ private:
     int getMinKey(int key[], bool mstSet[]);
     // To print MST
     void printMST(int parent[]);
+	// To remove an edge
+    void removeEdge(int start, int end);
 public:
 	Graph();
     Graph(AdjList list);
 	void reset();
-	void removeEdge(int start, int end);
     void checkStronglyConnected();
 	void detectCycle();
 	void shortestPath(int start, int end);
     bool findMSTOnce();
 	void findMST(int root);
     void selectEdgesForMST();
+    void selectEdgeToRemove();
 	// function to print the graph
 	void print();
     void addEdge(int source, int destination);

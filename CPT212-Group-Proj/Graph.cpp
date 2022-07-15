@@ -58,9 +58,9 @@ void Graph::addEdge(int source, int destination)
 void Graph::loopover(vector<node>& v, int num) {
 	
 	if (!v.empty()) {
-		cout << endl << num;
+		cout << endl << CITY_NAMES[num];
 		for (node n : v)
-			cout << " --> " << n.num << "(" << n.edgeLen << ")";
+			cout << " --> " << CITY_NAMES[n.num] << "(" << n.edgeLen << ")";
 	}
 }
 
@@ -149,7 +149,20 @@ void Graph::checkStronglyConnected() {
 	print();
 
 }
+void Graph::reset() {
+	initialize();
+}
 
+void Graph::removeEdge(int u, int v)
+{
+	for (int i = 0; i < myList[u].size(); i++) {
+		if (myList[u][i] == v) {
+			myList[u].erase(myList[u].begin() + i);
+			break;
+		}
+	}
+	
+}
 // A function to recieve a subgraph to apply MST on
 void Graph::selectEdgesForMST()
 {
@@ -166,9 +179,7 @@ void Graph::selectEdgesForMST()
 			cout << i << ". " << CITY_NAMES[i] << endl;
 		cout << "Please enter the number of parent vertex from list above: ";
 		cin >> sourceVertex;
-		/*
-		* validate selection from parents vertex
-		*/
+		
 		//printing all nieghbors from selected vertex
 		cout << "-----------------------------------------------\n";
 		vector<int> neighbors = getNeighbors(sourceVertex);
@@ -176,9 +187,7 @@ void Graph::selectEdgesForMST()
 			cout << i << ". " << CITY_NAMES[i] << endl;
 		cout << "Please enter the number of neighbor vertex from list above: ";
 		cin >> neighborVertex;
-		/*
-		 validate the neigbor from selection
-		*/
+		
 		subgraph.addEdge(sourceVertex, neighborVertex);
 		cout << "--------------------------------------------\n"
 			 << "Added the edge, do you want to add another ? (Y / N) : ";
@@ -201,6 +210,27 @@ void Graph::selectEdgesForMST()
 		subgraph.findMST(0);
 	}
 
+}
+
+void Graph::selectEdgeToRemove()
+{
+	int sourceVertex, neighborVertex;
+	//printing all vertices that have children
+	vector<int> parents = getParentVertices();
+	for (int i : parents)
+		cout << i << ". " << CITY_NAMES[i] << endl;
+	cout << "Please enter the number of parent vertex from list above: ";
+	cin >> sourceVertex;
+
+	//printing all nieghbors from selected vertex
+	cout << "-----------------------------------------------\n";
+	vector<int> neighbors = getNeighbors(sourceVertex);
+	for (int i : neighbors)
+		cout << i << ". " << CITY_NAMES[i] << endl;
+	cout << "Please enter the number of neighbor vertex from list above: ";
+	cin >> neighborVertex;
+
+	removeEdge(sourceVertex, neighborVertex);
 }
 
 vector<int> Graph::getParentVertices()
@@ -284,7 +314,7 @@ void Graph::printMST(int parent[]) {
 	cout << "The MST edges are:\n";
 	for (int i = 0; i < 5; i++) {
 		if (parent[i] != -1){
-			cout << parent[i] << " - " << i << endl;
+			cout << CITY_NAMES[parent[i]] << " ---> " << CITY_NAMES[i] << "  "<<"(" << DISTANCES[parent[i]][i] <<")" <<endl;
 			sum += DISTANCES[parent[i]][i];
 		}
 	}

@@ -11,44 +11,49 @@
 #include <vector>
 #include "Graph.h"
 using namespace std;
-/*
- Menu options
- 1. print graph
- 2. check if graph is strongly connected
- 3. check if there is a cycle
- 4. compute the shortest path between two vertices
- 5. Find an MST from certain edges
- 6. Add an edge
- 7. Remove an edge
- 8. Reset the graph
- 9. Quit program
 
-*/
+void menu();
 int main()
 {
-    //AdjList a{5};
-    //a[0].push_back(node(1, 5 ));
-    //a[1].push_back(node(2, 6 ));
-    //a[2].push_back(node(3, 4 ));
-    //a[3].push_back(node(4, 2 ));
-    ////a[4].push_back(node(0 ,3 ));
+    int menuChoice{};
  
     Graph g;
-    g.print();
-    g.selectEdgesForMST();
-    g.print();
-    //while (menuChoice != 9) {
-    //    //printMenu();
-    //    cout << "Please enter your choice : ";
-    //    cin >> menuChoice;
-    //    switch (menuChoice) {
-    //    case 5:
-    //        g.print();
-    //        g.printAndSelectEdges();
-    //        
-    //    }
-    //}
-
+    while (menuChoice != 9) {
+        menu();
+        cout << "Please enter your choice : ";
+        cin >> menuChoice;
+        switch (menuChoice) {
+        case 1:
+            g.print();
+            break;
+        case 5:
+            g.print();
+            g.selectEdgesForMST();
+            break;
+        case 7:
+           //to remove an edge
+            g.selectEdgeToRemove();
+            break;
+        case 8:
+            g.reset();
+        }
+    }
+    
   
     return 1;
+}
+
+void menu() {
+    cout << "--------------------------------------------------------------------------"<<
+            "\n\t\tMenu options\n\
+            1. print graph \n\
+            2. check if graph is strongly connected \n\
+            3. check if there is a cycle\n\
+            4. compute the shortest path between two vertices\n\
+            5. Find an MST from certain edges\n\
+            6. Add an edge\n\
+            7. Remove an edge \n\
+            8. Reset the graph\n\
+            9. Quit program\n" <<
+           "--------------------------------------------------------------------------"<< endl;
 }
